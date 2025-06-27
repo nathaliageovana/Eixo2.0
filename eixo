@@ -2,45 +2,25 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("empresa");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
 
-  // Simulated user credentials (for demo only)
-  const mockUser = {
-    username: "admin",
-    password: "senha123",
-  };
+  // Estado para dados da empresa
+  const [companyData, setCompanyData] = useState(
+    JSON.parse(localStorage.getItem("empresa")) || {}
+  );
 
-  // Load login status from localStorage
+  // Estado para serviços selecionados
+  const [selectedServices, setSelectedServices] = useState(
+    JSON.parse(localStorage.getItem("selectedServices")) || []
+  );
+
+  // Atualiza localStorage sempre que os dados mudarem
   useEffect(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-    if (!loggedIn) setActiveTab("login");
-  }, []);
+    localStorage.setItem("empresa", JSON.stringify(companyData));
+  }, [companyData]);
 
-  // Handle Login
-  const handleLogin = () => {
-    if (
-      formData.username === mockUser.username &&
-      formData.password === mockUser.password
-    ) {
-      setIsLoggedIn(true);
-      setActiveTab("empresa");
-      localStorage.setItem("isLoggedIn", "true");
-    } else {
-      alert("Credenciais inválidas!");
-    }
-  };
-
-  // Handle Logout
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setActiveTab("login");
-    localStorage.removeItem("isLoggedIn");
-  };
+  useEffect(() => {
+    localStorage.setItem("selectedServices", JSON.stringify(selectedServices));
+  }, [selectedServices]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -51,77 +31,69 @@ export default function App() {
           <img src="/logo.jpg" alt="Logo Eixo Segurança" className="h-8" />
           <h1 className="text-xl font-bold text-orange-500">Eixo Segurança</h1>
         </div>
-        {isLoggedIn && (
-          <button
-            onClick={handleLogout}
-            className="px-3 py-2 rounded-md transition hover:bg-gray-800 text-gray-300"
-          >
-            Logout
-          </button>
-        )}
       </header>
 
-      {/* Main Content */}
-      <main className="p-4 md:p-6 bg-gray-900 min-h-screen">
-        {!isLoggedIn ? (
-          <Login setIsLoggedIn={setIsLoggedIn} setFormData={setFormData} onLogin={handleLogin} />
-        ) : (
-          <>
-            {/* Sidebar Menu */}
-            <aside className="w-full md:w-64 bg-gray-800 p-4 space-y-2 mb-6 md:mb-0">
-              <h2 className="text-lg font-semibold mb-4 text-orange-500">Menu</h2>
-              <button
-                onClick={() => setActiveTab("empresa")}
-                className={`w-full text-left px-4 py-2 rounded-md transition ${
-                  activeTab === "empresa"
-                    ? "bg-orange-700 text-white"
-                    : "hover:bg-gray-700 text-gray-300"
-                }`}
-              >
-                🏢 Cadastro da Empresa
-              </button>
-              <button
-                onClick={() => setActiveTab("consultoria")}
-                className={`w-full text-left px-4 py-2 rounded-md transition ${
-                  activeTab === "consultoria"
-                    ? "bg-orange-700 text-white"
-                    : "hover:bg-gray-700 text-gray-300"
-                }`}
-              >
-                📅 Diárias de Consultoria
-              </button>
-              <button
-                onClick={() => setActiveTab("notafiscal")}
-                className={`w-full text-left px-4 py-2 rounded-md transition ${
-                  activeTab === "notafiscal"
-                    ? "bg-orange-700 text-white"
-                    : "hover:bg-gray-700 text-gray-300"
-                }`}
-              >
-                💰 Emissão de Nota Fiscal
-              </button>
-              <button
-                onClick={() => setActiveTab("sobre")}
-                className={`w-full text-left px-4 py-2 rounded-md transition ${
-                  activeTab === "sobre"
-                    ? "bg-orange-700 text-white"
-                    : "hover:bg-gray-700 text-gray-300"
-                }`}
-              >
-                🧭 Sobre Nós
-              </button>
-            </aside>
+      {/* Sidebar + Content */}
+      <div className="flex flex-col md:flex-row">
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 bg-gray-800 p-4 space-y-2">
+          <h2 className="text-lg font-semibold mb-4 text-orange-500">Menu</h2>
+          <button
+            onClick={() => setActiveTab("empresa")}
+            className={`w-full text-left px-4 py-2 rounded-md transition ${
+              activeTab === "empresa"
+                ? "bg-orange-700 text-white"
+                : "hover:bg-gray-700 text-gray-300"
+            }`}
+          >
+            🏢 Cadastro da Empresa
+          </button>
+          <button
+            onClick={() => setActiveTab("consultoria")}
+            className={`w-full text-left px-4 py-2 rounded-md transition ${
+              activeTab === "consultoria"
+                ? "bg-orange-700 text-white"
+                : "hover:bg-gray-700 text-gray-300"
+            }`}
+          >
+            📅 Diárias de Consultoria
+          </button>
+          <button
+            onClick={() => setActiveTab("notafiscal")}
+            className={`w-full text-left px-4 py-2 rounded-md transition ${
+              activeTab === "notafiscal"
+                ? "bg-orange-700 text-white"
+                : "hover:bg-gray-700 text-gray-300"
+            }`}
+          >
+            💰 Emissão de Nota Fiscal
+          </button>
+          <button
+            onClick={() => setActiveTab("sobre")}
+            className={`w-full text-left px-4 py-2 rounded-md transition ${
+              activeTab === "sobre"
+                ? "bg-orange-700 text-white"
+                : "hover:bg-gray-700 text-gray-300"
+            }`}
+          >
+            🧭 Sobre Nós
+          </button>
+        </aside>
 
-            {/* Dynamic Content */}
-            <main className="flex-1 p-4 md:p-6 bg-gray-900">
-              {activeTab === "empresa" && <CadastroEmpresa />}
-              {activeTab === "consultoria" && <ConsultoriaServicos />}
-              {activeTab === "notafiscal" && <EmissaoNotaFiscal />}
-              {activeTab === "sobre" && <SobreNos />}
-            </main>
-          </>
-        )}
-      </main>
+        {/* Main Content */}
+        <main className="flex-1 p-4 md:p-6 bg-gray-900 min-h-screen">
+          {activeTab === "empresa" && (
+            <CadastroEmpresa companyData={companyData} setCompanyData={setCompanyData} />
+          )}
+          {activeTab === "consultoria" && (
+            <ConsultoriaServicos selectedServices={selectedServices} setSelectedServices={setSelectedServices} />
+          )}
+          {activeTab === "notafiscal" && (
+            <EmissaoNotaFiscal companyData={companyData} selectedServices={selectedServices} />
+          )}
+          {activeTab === "sobre" && <SobreNos />}
+        </main>
+      </div>
 
       {/* Footer */}
       <footer className="bg-black text-center py-4 border-t border-gray-800 text-sm text-gray-500">
@@ -131,64 +103,11 @@ export default function App() {
   );
 }
 
-// Componente de Login
-function Login({ setIsLoggedIn, setFormData, onLogin }) {
-  return (
-    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-md mx-auto mt-12">
-      <h2 className="text-xl font-bold mb-6 text-orange-500">Login</h2>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onLogin();
-        }}
-        className="space-y-4"
-      >
-        <div>
-          <label className="block text-sm font-medium mb-1">Usuário</label>
-          <input
-            type="text"
-            name="username"
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, username: e.target.value }))
-            }
-            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
-            placeholder="admin"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Senha</label>
-          <input
-            type="password"
-            name="password"
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, password: e.target.value }))
-            }
-            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
-            placeholder="senha123"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md transition w-full"
-        >
-          Entrar
-        </button>
-      </form>
-    </div>
-  );
-}
-
 // Componente: Cadastro da Empresa
-function CadastroEmpresa() {
-  const [data, setData] = useState(
-    JSON.parse(localStorage.getItem("empresa")) || {}
-  );
-
+function CadastroEmpresa({ companyData, setCompanyData }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const updatedData = { ...data, [name]: value };
-    setData(updatedData);
-    localStorage.setItem("empresa", JSON.stringify(updatedData));
+    setCompanyData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -201,7 +120,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="razao"
-              value={data.razao || ""}
+              value={companyData.razao || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -211,7 +130,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="fantasia"
-              value={data.fantasia || ""}
+              value={companyData.fantasia || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -223,7 +142,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="cnpj"
-              value={data.cnpj || ""}
+              value={companyData.cnpj || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -233,7 +152,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="endereco"
-              value={data.endereco || ""}
+              value={companyData.endereco || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -245,7 +164,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="bairro"
-              value={data.bairro || ""}
+              value={companyData.bairro || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -255,7 +174,7 @@ function CadastroEmpresa() {
             <input
               type="text"
               name="cidade_estado"
-              value={data.cidade_estado || ""}
+              value={companyData.cidade_estado || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -267,7 +186,7 @@ function CadastroEmpresa() {
             <input
               type="tel"
               name="telefone"
-              value={data.telefone || ""}
+              value={companyData.telefone || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -277,7 +196,7 @@ function CadastroEmpresa() {
             <input
               type="email"
               name="email"
-              value={data.email || ""}
+              value={companyData.email || ""}
               onChange={handleChange}
               className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
             />
@@ -288,7 +207,7 @@ function CadastroEmpresa() {
           <input
             type="text"
             name="responsavel"
-            value={data.responsavel || ""}
+            value={companyData.responsavel || ""}
             onChange={handleChange}
             className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
           />
@@ -307,7 +226,7 @@ function CadastroEmpresa() {
 }
 
 // Componente: Diárias de Consultoria
-function ConsultoriaServicos() {
+function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
   const servicesList = [
     { id: 1, name: "Treinamento NR-35", description: "Segurança para trabalho em altura", price: 1200 },
     { id: 2, name: "Treinamento NR-10 (Reciclagem)", description: "Segurança em instalações elétricas", price: 1000 },
@@ -321,10 +240,6 @@ function ConsultoriaServicos() {
     { id: 10, name: "Diária TST", description: "Acompanhamento de atividades em campo", price: 430 },
   ];
 
-  const [selectedServices, setSelectedServices] = useState(
-    JSON.parse(localStorage.getItem("selectedServices")) || []
-  );
-
   const toggleService = (service) => {
     const isSelected = selectedServices.some((s) => s.id === service.id);
     let updated;
@@ -336,7 +251,6 @@ function ConsultoriaServicos() {
     }
 
     setSelectedServices(updated);
-    localStorage.setItem("selectedServices", JSON.stringify(updated));
   };
 
   return (
@@ -364,19 +278,17 @@ function ConsultoriaServicos() {
 }
 
 // Componente: Emissão de Nota Fiscal
-function EmissaoNotaFiscal() {
-  const company = JSON.parse(localStorage.getItem("empresa")) || null;
-  const services = JSON.parse(localStorage.getItem("selectedServices")) || [];
-  const total = services.reduce((sum, s) => sum + s.price, 0);
+function EmissaoNotaFiscal({ companyData, selectedServices }) {
+  const total = selectedServices.reduce((sum, s) => sum + s.price, 0);
 
   return (
     <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
       <h2 className="text-xl font-bold mb-6 text-orange-500">Emissão de Nota Fiscal</h2>
-      {company ? (
+      {companyData.fantasia ? (
         <>
-          <p className="mb-4">Empresa: <strong>{company.fantasia}</strong></p>
+          <p className="mb-4">Empresa: <strong>{companyData.fantasia}</strong></p>
           <ul className="space-y-2 mb-4">
-            {services.map((service) => (
+            {selectedServices.map((service) => (
               <li key={service.id} className="flex justify-between text-gray-300">
                 <span>{service.name}</span>
                 <span>R$ {service.price.toFixed(2)}</span>
