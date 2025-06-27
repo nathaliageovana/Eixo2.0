@@ -1,49 +1,72 @@
-import { useState, useEffect } from "react";
+[import { useState } from "react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("empresa");
-
-  // Estado para dados da empresa
-  const [companyData, setCompanyData] = useState(
-    JSON.parse(localStorage.getItem("empresa")) || {}
-  );
-
-  // Estado para serviços selecionados
-  const [selectedServices, setSelectedServices] = useState(
-    JSON.parse(localStorage.getItem("selectedServices")) || []
-  );
-
-  // Atualiza localStorage sempre que os dados mudarem
-  useEffect(() => {
-    localStorage.setItem("empresa", JSON.stringify(companyData));
-  }, [companyData]);
-
-  useEffect(() => {
-    localStorage.setItem("selectedServices", JSON.stringify(selectedServices));
-  }, [selectedServices]);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [companyName, setCompanyName] = useState("");
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-100 text-gray-800">
       {/* Header */}
-      <header className="bg-black border-b border-orange-500 flex items-center justify-between px-4 py-3 shadow-md">
-        <div className="flex items-center space-x-3">
-          {/* Substitua pelo caminho real da logo */}
-          <img src="/logo.jpg" alt="Logo Eixo Segurança" className="h-8" />
-          <h1 className="text-xl font-bold text-orange-500">Eixo Segurança</h1>
+      <header className="bg-blue-600 text-white shadow-md">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Eixo Segurança</h1>
+          <nav className="space-x-4 hidden md:flex">
+            <button
+              onClick={() => setActiveTab("empresa")}
+              className={`px-3 py-2 rounded-md transition ${
+                activeTab === "empresa"
+                  ? "bg-blue-700 text-white"
+                  : "hover:bg-blue-500"
+              }`}
+            >
+              Cadastro da Empresa
+            </button>
+            <button
+              onClick={() => setActiveTab("consultoria")}
+              className={`px-3 py-2 rounded-md transition ${
+                activeTab === "consultoria"
+                  ? "bg-blue-700 text-white"
+                  : "hover:bg-blue-500"
+              }`}
+            >
+              Diárias de Consultoria
+            </button>
+            <button
+              onClick={() => setActiveTab("certificados")}
+              className={`px-3 py-2 rounded-md transition ${
+                activeTab === "certificados"
+                  ? "bg-blue-700 text-white"
+                  : "hover:bg-blue-500"
+              }`}
+            >
+              Emissão de Nota Fiscal
+            </button>
+            <button
+              onClick={() => setActiveTab("sobre")}
+              className={`px-3 py-2 rounded-md transition ${
+                activeTab === "sobre"
+                  ? "bg-blue-700 text-white"
+                  : "hover:bg-blue-500"
+              }`}
+            >
+              Sobre Nós
+            </button>
+          </nav>
         </div>
       </header>
 
       {/* Sidebar + Content */}
       <div className="flex flex-col md:flex-row">
         {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-gray-800 p-4 space-y-2">
-          <h2 className="text-lg font-semibold mb-4 text-orange-500">Menu</h2>
+        <aside className="w-full md:w-64 bg-white shadow-md p-4 space-y-2">
+          <h2 className="text-lg font-semibold mb-4">Menu</h2>
           <button
             onClick={() => setActiveTab("empresa")}
             className={`w-full text-left px-4 py-2 rounded-md transition ${
               activeTab === "empresa"
-                ? "bg-orange-700 text-white"
-                : "hover:bg-gray-700 text-gray-300"
+                ? "bg-blue-100 text-blue-700"
+                : "hover:bg-gray-200"
             }`}
           >
             🏢 Cadastro da Empresa
@@ -52,18 +75,18 @@ export default function App() {
             onClick={() => setActiveTab("consultoria")}
             className={`w-full text-left px-4 py-2 rounded-md transition ${
               activeTab === "consultoria"
-                ? "bg-orange-700 text-white"
-                : "hover:bg-gray-700 text-gray-300"
+                ? "bg-blue-100 text-blue-700"
+                : "hover:bg-gray-200"
             }`}
           >
             📅 Diárias de Consultoria
           </button>
           <button
-            onClick={() => setActiveTab("notafiscal")}
+            onClick={() => setActiveTab("certificados")}
             className={`w-full text-left px-4 py-2 rounded-md transition ${
-              activeTab === "notafiscal"
-                ? "bg-orange-700 text-white"
-                : "hover:bg-gray-700 text-gray-300"
+              activeTab === "certificados"
+                ? "bg-blue-100 text-blue-700"
+                : "hover:bg-gray-200"
             }`}
           >
             💰 Emissão de Nota Fiscal
@@ -72,8 +95,8 @@ export default function App() {
             onClick={() => setActiveTab("sobre")}
             className={`w-full text-left px-4 py-2 rounded-md transition ${
               activeTab === "sobre"
-                ? "bg-orange-700 text-white"
-                : "hover:bg-gray-700 text-gray-300"
+                ? "bg-blue-100 text-blue-700"
+                : "hover:bg-gray-200"
             }`}
           >
             🧭 Sobre Nós
@@ -81,38 +104,55 @@ export default function App() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 bg-gray-900 min-h-screen">
-          {activeTab === "empresa" && (
-            <CadastroEmpresa companyData={companyData} setCompanyData={setCompanyData} />
-          )}
+        <main className="flex-1 p-4 md:p-6 bg-gray-50 min-h-screen">
+          {activeTab === "empresa" && <CadastroEmpresa setCompanyName={setCompanyName} />}
           {activeTab === "consultoria" && (
-            <ConsultoriaServicos selectedServices={selectedServices} setSelectedServices={setSelectedServices} />
+            <ConsultoriaServicos
+              selectedServices={selectedServices}
+              setSelectedServices={setSelectedServices}
+            />
           )}
-          {activeTab === "notafiscal" && (
-            <EmissaoNotaFiscal companyData={companyData} selectedServices={selectedServices} />
+          {activeTab === "certificados" && (
+            <EmissaoNotaFiscal
+              companyName={companyName}
+              services={selectedServices}
+            />
           )}
           {activeTab === "sobre" && <SobreNos />}
         </main>
       </div>
 
       {/* Footer */}
-      <footer className="bg-black text-center py-4 border-t border-gray-800 text-sm text-gray-500">
-        <p>© 2025 Eixo Segurança | Desenvolvido com tecnologia e segurança</p>
+      <footer className="bg-gray-800 text-white text-center py-4 mt-8">
+        <p>© 2025 Eixo Segurança - Todos os direitos reservados</p>
       </footer>
     </div>
   );
 }
 
-// Componente: Cadastro da Empresa
-function CadastroEmpresa({ companyData, setCompanyData }) {
+// Componente para Cadastro da Empresa
+function CadastroEmpresa({ setCompanyName }) {
+  const [formData, setFormData] = useState({
+    razao: "",
+    fantasia: "",
+    cnpj: "",
+    endereco: "",
+    bairro: "",
+    cidade_estado: "",
+    telefone: "",
+    email: "",
+    responsavel: "",
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCompanyData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "fantasia") setCompanyName(value);
   };
 
   return (
-    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6 text-orange-500">Cadastro da Empresa</h2>
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6">Cadastro da Empresa</h2>
       <form className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -120,9 +160,9 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
             <input
               type="text"
               name="razao"
-              value={companyData.razao || ""}
+              value={formData.razao}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
           <div>
@@ -130,21 +170,22 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
             <input
               type="text"
               name="fantasia"
-              value={companyData.fantasia || ""}
+              value={formData.fantasia}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">CNPJ</label>
             <input
               type="text"
               name="cnpj"
-              value={companyData.cnpj || ""}
+              value={formData.cnpj}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
           <div>
@@ -152,21 +193,22 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
             <input
               type="text"
               name="endereco"
-              value={companyData.endereco || ""}
+              value={formData.endereco}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Bairro</label>
             <input
               type="text"
               name="bairro"
-              value={companyData.bairro || ""}
+              value={formData.bairro}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
           <div>
@@ -174,21 +216,22 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
             <input
               type="text"
               name="cidade_estado"
-              value={companyData.cidade_estado || ""}
+              value={formData.cidade_estado}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
         </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Telefone</label>
             <input
               type="tel"
               name="telefone"
-              value={companyData.telefone || ""}
+              value={formData.telefone}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
           <div>
@@ -196,26 +239,28 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
             <input
               type="email"
               name="email"
-              value={companyData.email || ""}
+              value={formData.email}
               onChange={handleChange}
-              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
         </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Responsável Técnico</label>
           <input
             type="text"
             name="responsavel"
-            value={companyData.responsavel || ""}
+            value={formData.responsavel}
             onChange={handleChange}
-            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            className="w-full border border-gray-300 rounded-md px-3 py-2"
           />
         </div>
+
         <div className="pt-4">
           <button
             type="submit"
-            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition"
           >
             Salvar Dados
           </button>
@@ -225,7 +270,7 @@ function CadastroEmpresa({ companyData, setCompanyData }) {
   );
 }
 
-// Componente: Diárias de Consultoria
+// Componente para Diárias de Consultoria
 function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
   const servicesList = [
     { id: 1, name: "Treinamento NR-35", description: "Segurança para trabalho em altura", price: 1200 },
@@ -241,21 +286,16 @@ function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
   ];
 
   const toggleService = (service) => {
-    const isSelected = selectedServices.some((s) => s.id === service.id);
-    let updated;
-
-    if (isSelected) {
-      updated = selectedServices.filter((s) => s.id !== service.id);
+    if (selectedServices.some((s) => s.id === service.id)) {
+      setSelectedServices(selectedServices.filter((s) => s.id !== service.id));
     } else {
-      updated = [...selectedServices, service];
+      setSelectedServices([...selectedServices, service]);
     }
-
-    setSelectedServices(updated);
   };
 
   return (
-    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6 text-orange-500">Diárias de Consultoria</h2>
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6">Diárias de Consultoria</h2>
       <ul className="space-y-3">
         {servicesList.map((service) => (
           <li key={service.id} className="flex items-start">
@@ -263,12 +303,12 @@ function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
               type="checkbox"
               checked={selectedServices.some((s) => s.id === service.id)}
               onChange={() => toggleService(service)}
-              className="mt-1 mr-3 accent-orange-500"
+              className="mt-1 mr-3"
             />
             <div>
               <h3 className="font-semibold">{service.name}</h3>
-              <p className="text-sm text-gray-400">{service.description}</p>
-              <p className="text-sm text-orange-400 font-medium">R$ {service.price.toFixed(2)}</p>
+              <p className="text-sm text-gray-600">{service.description}</p>
+              <p className="text-sm text-gray-700 font-medium">R$ {service.price.toFixed(2)}</p>
             </div>
           </li>
         ))}
@@ -277,54 +317,54 @@ function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
   );
 }
 
-// Componente: Emissão de Nota Fiscal
-function EmissaoNotaFiscal({ companyData, selectedServices }) {
-  const total = selectedServices.reduce((sum, s) => sum + s.price, 0);
+// Componente para Emissão de Nota Fiscal
+function EmissaoNotaFiscal({ companyName, services }) {
+  const total = services.reduce((sum, service) => sum + service.price, 0);
 
   return (
-    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6 text-orange-500">Emissão de Nota Fiscal</h2>
-      {companyData.fantasia ? (
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6">Emissão de Nota Fiscal</h2>
+      {companyName ? (
         <>
-          <p className="mb-4">Empresa: <strong>{companyData.fantasia}</strong></p>
+          <p className="mb-4">Empresa: <strong>{companyName}</strong></p>
           <ul className="space-y-2 mb-4">
-            {selectedServices.map((service) => (
-              <li key={service.id} className="flex justify-between text-gray-300">
+            {services.map((service) => (
+              <li key={service.id} className="flex justify-between">
                 <span>{service.name}</span>
                 <span>R$ {service.price.toFixed(2)}</span>
               </li>
             ))}
           </ul>
-          <hr className="my-4 border-gray-700" />
-          <p className="text-lg font-bold text-orange-400">Total: R$ {total.toFixed(2)}</p>
+          <hr className="my-4" />
+          <p className="text-lg font-bold">Total: R$ {total.toFixed(2)}</p>
           <button className="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">
             Emitir Nota Fiscal
           </button>
         </>
       ) : (
-        <p className="text-yellow-500">Selecione uma empresa antes de emitir a nota fiscal.</p>
+        <p className="text-yellow-600">Selecione uma empresa antes de emitir a nota fiscal.</p>
       )}
     </div>
   );
 }
 
-// Componente: Sobre Nós
+// Componente Sobre Nós
 function SobreNos() {
   return (
-    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6 text-orange-500">Sobre Nós</h2>
-      <div className="space-y-4 text-gray-300">
+    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6">Sobre Nós</h2>
+      <div className="space-y-4">
         <p>
           A <strong>Eixo Segurança</strong> é uma empresa especializada em soluções técnicas e estratégicas nas áreas de <strong>Segurança do Trabalho</strong>, <strong>Prevenção de Incêndios</strong> e <strong>Engenharia de Segurança</strong>. Atuamos com foco em obras civis, indústrias, treinamentos e gestão de riscos.
         </p>
-        <h3 className="font-semibold text-orange-400">Principais Serviços:</h3>
+        <h3 className="font-semibold">Principais Serviços:</h3>
         <ul className="list-disc pl-5 space-y-1">
           <li>🧯 Prevenção e Combate a Incêndios</li>
           <li>📚 Treinamentos e Capacitações</li>
           <li>📑 Documentações e Laudos</li>
           <li>🛠️ Acompanhamento Técnico</li>
         </ul>
-        <h3 className="font-semibold text-orange-400">Contato:</h3>
+        <h3 className="font-semibold">Contato:</h3>
         <p>(62) 99124-7121 | eixo.seguranca@outlook.com | Anápolis-GO</p>
       </div>
     </div>
