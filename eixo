@@ -1,372 +1,306 @@
-[import { useState } from "react";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eixo Segurança</title>
+  <style>
+    :root {
+      --bg-color: #111;
+      --text-color: #fff;
+      --accent-color: orange;
+      --card-bg: #222;
+    }
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState("empresa");
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [companyName, setCompanyName] = useState("");
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
 
-  return (
-    <div className="min-h-screen bg-gray-100 text-gray-800">
-      {/* Header */}
-      <header className="bg-blue-600 text-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Eixo Segurança</h1>
-          <nav className="space-x-4 hidden md:flex">
-            <button
-              onClick={() => setActiveTab("empresa")}
-              className={`px-3 py-2 rounded-md transition ${
-                activeTab === "empresa"
-                  ? "bg-blue-700 text-white"
-                  : "hover:bg-blue-500"
-              }`}
-            >
-              Cadastro da Empresa
-            </button>
-            <button
-              onClick={() => setActiveTab("consultoria")}
-              className={`px-3 py-2 rounded-md transition ${
-                activeTab === "consultoria"
-                  ? "bg-blue-700 text-white"
-                  : "hover:bg-blue-500"
-              }`}
-            >
-              Diárias de Consultoria
-            </button>
-            <button
-              onClick={() => setActiveTab("certificados")}
-              className={`px-3 py-2 rounded-md transition ${
-                activeTab === "certificados"
-                  ? "bg-blue-700 text-white"
-                  : "hover:bg-blue-500"
-              }`}
-            >
-              Emissão de Nota Fiscal
-            </button>
-            <button
-              onClick={() => setActiveTab("sobre")}
-              className={`px-3 py-2 rounded-md transition ${
-                activeTab === "sobre"
-                  ? "bg-blue-700 text-white"
-                  : "hover:bg-blue-500"
-              }`}
-            >
-              Sobre Nós
-            </button>
-          </nav>
-        </div>
-      </header>
+    header {
+      background-color: black;
+      border-bottom: 2px solid var(--accent-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-      {/* Sidebar + Content */}
-      <div className="flex flex-col md:flex-row">
-        {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-white shadow-md p-4 space-y-2">
-          <h2 className="text-lg font-semibold mb-4">Menu</h2>
-          <button
-            onClick={() => setActiveTab("empresa")}
-            className={`w-full text-left px-4 py-2 rounded-md transition ${
-              activeTab === "empresa"
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            🏢 Cadastro da Empresa
-          </button>
-          <button
-            onClick={() => setActiveTab("consultoria")}
-            className={`w-full text-left px-4 py-2 rounded-md transition ${
-              activeTab === "consultoria"
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            📅 Diárias de Consultoria
-          </button>
-          <button
-            onClick={() => setActiveTab("certificados")}
-            className={`w-full text-left px-4 py-2 rounded-md transition ${
-              activeTab === "certificados"
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            💰 Emissão de Nota Fiscal
-          </button>
-          <button
-            onClick={() => setActiveTab("sobre")}
-            className={`w-full text-left px-4 py-2 rounded-md transition ${
-              activeTab === "sobre"
-                ? "bg-blue-100 text-blue-700"
-                : "hover:bg-gray-200"
-            }`}
-          >
-            🧭 Sobre Nós
-          </button>
-        </aside>
+    header img {
+      height: 40px;
+    }
 
-        {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 bg-gray-50 min-h-screen">
-          {activeTab === "empresa" && <CadastroEmpresa setCompanyName={setCompanyName} />}
-          {activeTab === "consultoria" && (
-            <ConsultoriaServicos
-              selectedServices={selectedServices}
-              setSelectedServices={setSelectedServices}
-            />
-          )}
-          {activeTab === "certificados" && (
-            <EmissaoNotaFiscal
-              companyName={companyName}
-              services={selectedServices}
-            />
-          )}
-          {activeTab === "sobre" && <SobreNos />}
-        </main>
+    nav {
+      display: none;
+    }
+
+    aside {
+      width: 250px;
+      background-color: #1a1a1a;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    aside h2 {
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+    }
+
+    aside button {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: white;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    aside button:hover,
+    aside button.active {
+      background-color: var(--accent-color);
+      color: black;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.25rem;
+      margin-bottom: 1rem;
+      border: 1px solid #444;
+      background-color: #333;
+      color: white;
+      border-radius: 4px;
+    }
+
+    form button {
+      background-color: var(--accent-color);
+      color: black;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    ul.services li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    ul.services input[type="checkbox"] {
+      margin-right: 1rem;
+    }
+
+    .total {
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      margin-top: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: black;
+      color: gray;
+      font-size: 0.9rem;
+    }
+
+    @media (min-width: 768px) {
+      nav {
+        display: block;
+      }
+
+      .layout {
+        display: flex;
+      }
+
+      aside {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <img src="logo.jpg" alt="Logo Eixo Segurança" />
+      <h1>Eixo Segurança</h1>
+    </div>
+  </header>
+
+  <!-- Layout -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside>
+      <h2>Menu</h2>
+      <button class="active" onclick="showTab('empresa')">🏢 Cadastro da Empresa</button>
+      <button onclick="showTab('consultoria')">📅 Diárias de Consultoria</button>
+      <button onclick="showTab('notafiscal')">💰 Emissão de Nota Fiscal</button>
+      <button onclick="showTab('sobre')">🧭 Sobre Nós</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="container">
+      <div id="empresa" class="tab-content">
+        <h2>Cadastro da Empresa</h2>
+        <form onsubmit="saveEmpresa(event)">
+          <input type="text" name="razao" placeholder="Razão Social" required />
+          <input type="text" name="fantasia" placeholder="Nome Fantasia" required />
+          <input type="text" name="cnpj" placeholder="CNPJ" required />
+          <input type="text" name="endereco" placeholder="Endereço" required />
+          <input type="text" name="bairro" placeholder="Bairro" required />
+          <input type="text" name="cidade_estado" placeholder="Cidade / Estado" required />
+          <input type="tel" name="telefone" placeholder="Telefone" required />
+          <input type="email" name="email" placeholder="E-mail" required />
+          <input type="text" name="responsavel" placeholder="Responsável Técnico" required />
+          <button type="submit">Salvar Dados</button>
+        </form>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white text-center py-4 mt-8">
-        <p>© 2025 Eixo Segurança - Todos os direitos reservados</p>
-      </footer>
-    </div>
-  );
-}
+      <div id="consultoria" class="tab-content" style="display:none;">
+        <h2>Diárias de Consultoria</h2>
+        <ul class="services" id="servicesList"></ul>
+      </div>
 
-// Componente para Cadastro da Empresa
-function CadastroEmpresa({ setCompanyName }) {
-  const [formData, setFormData] = useState({
-    razao: "",
-    fantasia: "",
-    cnpj: "",
-    endereco: "",
-    bairro: "",
-    cidade_estado: "",
-    telefone: "",
-    email: "",
-    responsavel: "",
-  });
+      <div id="notafiscal" class="tab-content" style="display:none;">
+        <h2>Emissão de Nota Fiscal</h2>
+        <p><strong>Empresa:</strong> <span id="notaEmpresa"></span></p>
+        <ul id="notaItens"></ul>
+        <div class="total" id="notaTotal"></div>
+        <button onclick="emitirNota()">Emitir Nota Fiscal</button>
+      </div>
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "fantasia") setCompanyName(value);
-  };
-
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6">Cadastro da Empresa</h2>
-      <form className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Razão Social</label>
-            <input
-              type="text"
-              name="razao"
-              value={formData.razao}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Nome Fantasia</label>
-            <input
-              type="text"
-              name="fantasia"
-              value={formData.fantasia}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">CNPJ</label>
-            <input
-              type="text"
-              name="cnpj"
-              value={formData.cnpj}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Endereço</label>
-            <input
-              type="text"
-              name="endereco"
-              value={formData.endereco}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Bairro</label>
-            <input
-              type="text"
-              name="bairro"
-              value={formData.bairro}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Cidade / Estado</label>
-            <input
-              type="text"
-              name="cidade_estado"
-              value={formData.cidade_estado}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Telefone</label>
-            <input
-              type="tel"
-              name="telefone"
-              value={formData.telefone}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">E-mail</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Responsável Técnico</label>
-          <input
-            type="text"
-            name="responsavel"
-            value={formData.responsavel}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-3 py-2"
-          />
-        </div>
-
-        <div className="pt-4">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition"
-          >
-            Salvar Dados
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-// Componente para Diárias de Consultoria
-function ConsultoriaServicos({ selectedServices, setSelectedServices }) {
-  const servicesList = [
-    { id: 1, name: "Treinamento NR-35", description: "Segurança para trabalho em altura", price: 1200 },
-    { id: 2, name: "Treinamento NR-10 (Reciclagem)", description: "Segurança em instalações elétricas", price: 1000 },
-    { id: 3, name: "Primeiros Socorros", description: "Teórico+prático, simulação e apostila", price: 1100 },
-    { id: 4, name: "Elaboração de APR", description: "Análise Preliminar de Risco por atividade", price: 430 },
-    { id: 5, name: "PT (Permissão de Trabalho)", description: "Documento de autorização de atividades de risco", price: 430 },
-    { id: 6, name: "Campanha de Segurança (SIPAT, DDS etc.)", description: "Planejamento, execução e registro fotográfico", price: 430 },
-    { id: 7, name: "Consultoria Técnica em Obra", description: "Visita com relatório técnico de segurança", price: 600 },
-    { id: 8, name: "Plano de Emergência e Rota de Fuga", description: "Avaliação, implantação e sinalização recomendada", price: 600 },
-    { id: 9, name: "Dimensionamento de EPI/Extintores", description: "Cálculo conforme normas regulamentadoras", price: 430 },
-    { id: 10, name: "Diária TST", description: "Acompanhamento de atividades em campo", price: 430 },
-  ];
-
-  const toggleService = (service) => {
-    if (selectedServices.some((s) => s.id === service.id)) {
-      setSelectedServices(selectedServices.filter((s) => s.id !== service.id));
-    } else {
-      setSelectedServices([...selectedServices, service]);
-    }
-  };
-
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6">Diárias de Consultoria</h2>
-      <ul className="space-y-3">
-        {servicesList.map((service) => (
-          <li key={service.id} className="flex items-start">
-            <input
-              type="checkbox"
-              checked={selectedServices.some((s) => s.id === service.id)}
-              onChange={() => toggleService(service)}
-              className="mt-1 mr-3"
-            />
-            <div>
-              <h3 className="font-semibold">{service.name}</h3>
-              <p className="text-sm text-gray-600">{service.description}</p>
-              <p className="text-sm text-gray-700 font-medium">R$ {service.price.toFixed(2)}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-// Componente para Emissão de Nota Fiscal
-function EmissaoNotaFiscal({ companyName, services }) {
-  const total = services.reduce((sum, service) => sum + service.price, 0);
-
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6">Emissão de Nota Fiscal</h2>
-      {companyName ? (
-        <>
-          <p className="mb-4">Empresa: <strong>{companyName}</strong></p>
-          <ul className="space-y-2 mb-4">
-            {services.map((service) => (
-              <li key={service.id} className="flex justify-between">
-                <span>{service.name}</span>
-                <span>R$ {service.price.toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-          <hr className="my-4" />
-          <p className="text-lg font-bold">Total: R$ {total.toFixed(2)}</p>
-          <button className="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">
-            Emitir Nota Fiscal
-          </button>
-        </>
-      ) : (
-        <p className="text-yellow-600">Selecione uma empresa antes de emitir a nota fiscal.</p>
-      )}
-    </div>
-  );
-}
-
-// Componente Sobre Nós
-function SobreNos() {
-  return (
-    <div className="bg-white shadow-md rounded-lg p-6 max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-6">Sobre Nós</h2>
-      <div className="space-y-4">
+      <div id="sobre" class="tab-content" style="display:none;">
+        <h2>Sobre Nós</h2>
         <p>
           A <strong>Eixo Segurança</strong> é uma empresa especializada em soluções técnicas e estratégicas nas áreas de <strong>Segurança do Trabalho</strong>, <strong>Prevenção de Incêndios</strong> e <strong>Engenharia de Segurança</strong>. Atuamos com foco em obras civis, indústrias, treinamentos e gestão de riscos.
         </p>
-        <h3 className="font-semibold">Principais Serviços:</h3>
-        <ul className="list-disc pl-5 space-y-1">
+        <h3>Principais Serviços:</h3>
+        <ul>
           <li>🧯 Prevenção e Combate a Incêndios</li>
           <li>📚 Treinamentos e Capacitações</li>
           <li>📑 Documentações e Laudos</li>
           <li>🛠️ Acompanhamento Técnico</li>
         </ul>
-        <h3 className="font-semibold">Contato:</h3>
+        <h3>Contato:</h3>
         <p>(62) 99124-7121 | eixo.seguranca@outlook.com | Anápolis-GO</p>
       </div>
-    </div>
-  );
-}
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Eixo Segurança - Todos os direitos reservados
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const servicesList = [
+      { id: 1, name: "Treinamento NR-35", description: "Segurança para trabalho em altura", price: 1200 },
+      { id: 2, name: "Treinamento NR-10 (Reciclagem)", description: "Segurança em instalações elétricas", price: 1000 },
+      { id: 3, name: "Primeiros Socorros", description: "Teórico+prático, simulação e apostila", price: 1100 },
+      { id: 4, name: "Elaboração de APR", description: "Análise Preliminar de Risco por atividade", price: 430 },
+      { id: 5, name: "PT (Permissão de Trabalho)", description: "Documento de autorização de atividades de risco", price: 430 },
+      { id: 6, name: "Campanha de Segurança (SIPAT, DDS etc.)", description: "Planejamento, execução e registro fotográfico", price: 430 },
+      { id: 7, name: "Consultoria Técnica em Obra", description: "Visita com relatório técnico de segurança", price: 600 },
+      { id: 8, name: "Plano de Emergência e Rota de Fuga", description: "Avaliação, implantação e sinalização recomendada", price: 600 },
+      { id: 9, name: "Dimensionamento de EPI/Extintores", description: "Cálculo conforme normas regulamentadoras", price: 430 },
+      { id: 10, name: "Diária TST", description: "Acompanhamento de atividades em campo", price: 430 }
+    ];
+
+    let selectedServices = JSON.parse(localStorage.getItem("selectedServices")) || [];
+
+    function showTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
+      document.getElementById(tabId).style.display = 'block';
+
+      document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      if (tabId === 'notafiscal') loadNota();
+    }
+
+    function saveEmpresa(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      localStorage.setItem("empresa", JSON.stringify(data));
+      alert("Dados salvos!");
+    }
+
+    function renderServices() {
+      const container = document.getElementById("servicesList");
+      container.innerHTML = "";
+      servicesList.forEach(s => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <input type="checkbox" ${selectedServices.some(x => x.id === s.id) ? "checked" : ""} onchange="toggleService(${JSON.stringify(s)})">
+          <div>
+            <strong>${s.name}</strong><br/>
+            <small>${s.description}</small><br/>
+            <span style="color: var(--accent-color);">${s.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
+          </div>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    function toggleService(service) {
+      const index = selectedServices.findIndex(s => s.id == service.id);
+      if (index > -1) {
+        selectedServices.splice(index, 1);
+      } else {
+        selectedServices.push(service);
+      }
+      localStorage.setItem("selectedServices", JSON.stringify(selectedServices));
+    }
+
+    function loadNota() {
+      const empresa = JSON.parse(localStorage.getItem("empresa")) || {};
+      const services = JSON.parse(localStorage.getItem("selectedServices")) || [];
+      const total = services.reduce((sum, s) => sum + parseFloat(s.price), 0);
+
+      document.getElementById("notaEmpresa").innerText = empresa.fantasia || "Nenhuma empresa cadastrada";
+      const items = document.getElementById("notaItens");
+      items.innerHTML = "";
+      services.forEach(s => {
+        const li = document.createElement("li");
+        li.textContent = `${s.name} - ${s.price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+        items.appendChild(li);
+      });
+
+      document.getElementById("notaTotal").textContent = `Total: ${total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+    }
+
+    function emitirNota() {
+      alert("Nota fiscal emitida com sucesso!");
+    }
+
+    // Init
+    document.addEventListener("DOMContentLoaded", () => {
+      renderServices();
+      loadNota();
+    });
+  </script>
+</body>
+</html>
