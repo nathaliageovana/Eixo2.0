@@ -1,0 +1,420 @@
+import { useState, useEffect } from "react";
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState("empresa");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  // Simulated user credentials (for demo only)
+  const mockUser = {
+    username: "admin",
+    password: "senha123",
+  };
+
+  // Load login status from localStorage
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(loggedIn);
+    if (!loggedIn) setActiveTab("login");
+  }, []);
+
+  // Handle Login
+  const handleLogin = () => {
+    if (
+      formData.username === mockUser.username &&
+      formData.password === mockUser.password
+    ) {
+      setIsLoggedIn(true);
+      setActiveTab("empresa");
+      localStorage.setItem("isLoggedIn", "true");
+    } else {
+      alert("Credenciais inválidas!");
+    }
+  };
+
+  // Handle Logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setActiveTab("login");
+    localStorage.removeItem("isLoggedIn");
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Header */}
+      <header className="bg-black border-b border-orange-500 flex items-center justify-between px-4 py-3 shadow-md">
+        <div className="flex items-center space-x-3">
+          {/* Substitua pelo caminho real da logo */}
+          <img src="/logo.jpg" alt="Logo Eixo Segurança" className="h-8" />
+          <h1 className="text-xl font-bold text-orange-500">Eixo Segurança</h1>
+        </div>
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 rounded-md transition hover:bg-gray-800 text-gray-300"
+          >
+            Logout
+          </button>
+        )}
+      </header>
+
+      {/* Main Content */}
+      <main className="p-4 md:p-6 bg-gray-900 min-h-screen">
+        {!isLoggedIn ? (
+          <Login setIsLoggedIn={setIsLoggedIn} setFormData={setFormData} onLogin={handleLogin} />
+        ) : (
+          <>
+            {/* Sidebar Menu */}
+            <aside className="w-full md:w-64 bg-gray-800 p-4 space-y-2 mb-6 md:mb-0">
+              <h2 className="text-lg font-semibold mb-4 text-orange-500">Menu</h2>
+              <button
+                onClick={() => setActiveTab("empresa")}
+                className={`w-full text-left px-4 py-2 rounded-md transition ${
+                  activeTab === "empresa"
+                    ? "bg-orange-700 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`}
+              >
+                🏢 Cadastro da Empresa
+              </button>
+              <button
+                onClick={() => setActiveTab("consultoria")}
+                className={`w-full text-left px-4 py-2 rounded-md transition ${
+                  activeTab === "consultoria"
+                    ? "bg-orange-700 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`}
+              >
+                📅 Diárias de Consultoria
+              </button>
+              <button
+                onClick={() => setActiveTab("notafiscal")}
+                className={`w-full text-left px-4 py-2 rounded-md transition ${
+                  activeTab === "notafiscal"
+                    ? "bg-orange-700 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`}
+              >
+                💰 Emissão de Nota Fiscal
+              </button>
+              <button
+                onClick={() => setActiveTab("sobre")}
+                className={`w-full text-left px-4 py-2 rounded-md transition ${
+                  activeTab === "sobre"
+                    ? "bg-orange-700 text-white"
+                    : "hover:bg-gray-700 text-gray-300"
+                }`}
+              >
+                🧭 Sobre Nós
+              </button>
+            </aside>
+
+            {/* Dynamic Content */}
+            <main className="flex-1 p-4 md:p-6 bg-gray-900">
+              {activeTab === "empresa" && <CadastroEmpresa />}
+              {activeTab === "consultoria" && <ConsultoriaServicos />}
+              {activeTab === "notafiscal" && <EmissaoNotaFiscal />}
+              {activeTab === "sobre" && <SobreNos />}
+            </main>
+          </>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-black text-center py-4 border-t border-gray-800 text-sm text-gray-500">
+        <p>© 2025 Eixo Segurança | Desenvolvido com tecnologia e segurança</p>
+      </footer>
+    </div>
+  );
+}
+
+// Componente de Login
+function Login({ setIsLoggedIn, setFormData, onLogin }) {
+  return (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-md mx-auto mt-12">
+      <h2 className="text-xl font-bold mb-6 text-orange-500">Login</h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onLogin();
+        }}
+        className="space-y-4"
+      >
+        <div>
+          <label className="block text-sm font-medium mb-1">Usuário</label>
+          <input
+            type="text"
+            name="username"
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, username: e.target.value }))
+            }
+            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            placeholder="admin"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Senha</label>
+          <input
+            type="password"
+            name="password"
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, password: e.target.value }))
+            }
+            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            placeholder="senha123"
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md transition w-full"
+        >
+          Entrar
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// Componente: Cadastro da Empresa
+function CadastroEmpresa() {
+  const [data, setData] = useState(
+    JSON.parse(localStorage.getItem("empresa")) || {}
+  );
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const updatedData = { ...data, [name]: value };
+    setData(updatedData);
+    localStorage.setItem("empresa", JSON.stringify(updatedData));
+  };
+
+  return (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6 text-orange-500">Cadastro da Empresa</h2>
+      <form className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Razão Social</label>
+            <input
+              type="text"
+              name="razao"
+              value={data.razao || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Nome Fantasia</label>
+            <input
+              type="text"
+              name="fantasia"
+              value={data.fantasia || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">CNPJ</label>
+            <input
+              type="text"
+              name="cnpj"
+              value={data.cnpj || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Endereço</label>
+            <input
+              type="text"
+              name="endereco"
+              value={data.endereco || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Bairro</label>
+            <input
+              type="text"
+              name="bairro"
+              value={data.bairro || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Cidade / Estado</label>
+            <input
+              type="text"
+              name="cidade_estado"
+              value={data.cidade_estado || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Telefone</label>
+            <input
+              type="tel"
+              name="telefone"
+              value={data.telefone || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">E-mail</label>
+            <input
+              type="email"
+              name="email"
+              value={data.email || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Responsável Técnico</label>
+          <input
+            type="text"
+            name="responsavel"
+            value={data.responsavel || ""}
+            onChange={handleChange}
+            className="w-full border border-gray-600 bg-gray-700 text-white rounded-md px-3 py-2"
+          />
+        </div>
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md transition"
+          >
+            Salvar Dados
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+// Componente: Diárias de Consultoria
+function ConsultoriaServicos() {
+  const servicesList = [
+    { id: 1, name: "Treinamento NR-35", description: "Segurança para trabalho em altura", price: 1200 },
+    { id: 2, name: "Treinamento NR-10 (Reciclagem)", description: "Segurança em instalações elétricas", price: 1000 },
+    { id: 3, name: "Primeiros Socorros", description: "Teórico+prático, simulação e apostila", price: 1100 },
+    { id: 4, name: "Elaboração de APR", description: "Análise Preliminar de Risco por atividade", price: 430 },
+    { id: 5, name: "PT (Permissão de Trabalho)", description: "Documento de autorização de atividades de risco", price: 430 },
+    { id: 6, name: "Campanha de Segurança (SIPAT, DDS etc.)", description: "Planejamento, execução e registro fotográfico", price: 430 },
+    { id: 7, name: "Consultoria Técnica em Obra", description: "Visita com relatório técnico de segurança", price: 600 },
+    { id: 8, name: "Plano de Emergência e Rota de Fuga", description: "Avaliação, implantação e sinalização recomendada", price: 600 },
+    { id: 9, name: "Dimensionamento de EPI/Extintores", description: "Cálculo conforme normas regulamentadoras", price: 430 },
+    { id: 10, name: "Diária TST", description: "Acompanhamento de atividades em campo", price: 430 },
+  ];
+
+  const [selectedServices, setSelectedServices] = useState(
+    JSON.parse(localStorage.getItem("selectedServices")) || []
+  );
+
+  const toggleService = (service) => {
+    const isSelected = selectedServices.some((s) => s.id === service.id);
+    let updated;
+
+    if (isSelected) {
+      updated = selectedServices.filter((s) => s.id !== service.id);
+    } else {
+      updated = [...selectedServices, service];
+    }
+
+    setSelectedServices(updated);
+    localStorage.setItem("selectedServices", JSON.stringify(updated));
+  };
+
+  return (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6 text-orange-500">Diárias de Consultoria</h2>
+      <ul className="space-y-3">
+        {servicesList.map((service) => (
+          <li key={service.id} className="flex items-start">
+            <input
+              type="checkbox"
+              checked={selectedServices.some((s) => s.id === service.id)}
+              onChange={() => toggleService(service)}
+              className="mt-1 mr-3 accent-orange-500"
+            />
+            <div>
+              <h3 className="font-semibold">{service.name}</h3>
+              <p className="text-sm text-gray-400">{service.description}</p>
+              <p className="text-sm text-orange-400 font-medium">R$ {service.price.toFixed(2)}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// Componente: Emissão de Nota Fiscal
+function EmissaoNotaFiscal() {
+  const company = JSON.parse(localStorage.getItem("empresa")) || null;
+  const services = JSON.parse(localStorage.getItem("selectedServices")) || [];
+  const total = services.reduce((sum, s) => sum + s.price, 0);
+
+  return (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6 text-orange-500">Emissão de Nota Fiscal</h2>
+      {company ? (
+        <>
+          <p className="mb-4">Empresa: <strong>{company.fantasia}</strong></p>
+          <ul className="space-y-2 mb-4">
+            {services.map((service) => (
+              <li key={service.id} className="flex justify-between text-gray-300">
+                <span>{service.name}</span>
+                <span>R$ {service.price.toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+          <hr className="my-4 border-gray-700" />
+          <p className="text-lg font-bold text-orange-400">Total: R$ {total.toFixed(2)}</p>
+          <button className="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md transition">
+            Emitir Nota Fiscal
+          </button>
+        </>
+      ) : (
+        <p className="text-yellow-500">Selecione uma empresa antes de emitir a nota fiscal.</p>
+      )}
+    </div>
+  );
+}
+
+// Componente: Sobre Nós
+function SobreNos() {
+  return (
+    <div className="bg-gray-800 shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-bold mb-6 text-orange-500">Sobre Nós</h2>
+      <div className="space-y-4 text-gray-300">
+        <p>
+          A <strong>Eixo Segurança</strong> é uma empresa especializada em soluções técnicas e estratégicas nas áreas de <strong>Segurança do Trabalho</strong>, <strong>Prevenção de Incêndios</strong> e <strong>Engenharia de Segurança</strong>. Atuamos com foco em obras civis, indústrias, treinamentos e gestão de riscos.
+        </p>
+        <h3 className="font-semibold text-orange-400">Principais Serviços:</h3>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>🧯 Prevenção e Combate a Incêndios</li>
+          <li>📚 Treinamentos e Capacitações</li>
+          <li>📑 Documentações e Laudos</li>
+          <li>🛠️ Acompanhamento Técnico</li>
+        </ul>
+        <h3 className="font-semibold text-orange-400">Contato:</h3>
+        <p>(62) 99124-7121 | eixo.seguranca@outlook.com | Anápolis-GO</p>
+      </div>
+    </div>
+  );
+}
